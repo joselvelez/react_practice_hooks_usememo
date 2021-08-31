@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function generateData() {
+  const t0 = performance.now();
+  const data = Array(10000)
+    .fill(0)
+    .map(() => Math.random())
+    .filter(number => number < 0.5);
+  const t1 = performance.now();
+  console.log(`generated data in ${t1 - t0}ms`);
+  return data;
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const Demo = () => {
+  const [count, setCount] = useState(0);
+  const data = useMemo(() => generateData(), []);
+
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>
+        Re-render
+      </button>
+      <ul>
+        {data.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
+ReactDOM.render(<Demo />, document.querySelector('#root'));
